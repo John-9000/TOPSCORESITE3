@@ -452,7 +452,7 @@ function writeScoreCache(remoteMatches, attemptedPastIds = []) {
   for (const matchId of attemptedPastIds) {
     nextMatches[matchId] = {
       ...(nextMatches[matchId] ?? {}),
-      attemptedAt: nextMatches[matchId]?.attemptedAt ?? now,
+      attemptedAt: now,
     };
   }
 
@@ -464,7 +464,7 @@ function writeScoreCache(remoteMatches, attemptedPastIds = []) {
       awayScore: score.away,
       status: match.status,
       updatedAt: match.updatedAt ?? now,
-      attemptedAt: nextMatches[match.matchId]?.attemptedAt ?? now,
+      attemptedAt: now,
     };
   }
 

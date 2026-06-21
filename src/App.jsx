@@ -248,14 +248,18 @@ function MatchesView({
           <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer" aria-label="Get TopScore on Google Play">
             <img src="/assets/google-play-store-badge.svg" alt="Get it on Google Play" />
           </a>
+          <div className="promoList" aria-label="TopScore highlights">
+            <p className="promoLine">
+              <img src="/assets/sports-soccer.svg" alt="" />
+              <span>Live scores for World Cup 2026</span>
+            </p>
+            <p className="promoLine">
+              <img src="/assets/sports-soccer.svg" alt="" />
+              <span>Community predictions</span>
+            </p>
+          </div>
         </div>
       </div>
-
-      <p className="promoLine">
-        <span>Live scores for World Cup 2026</span>
-        <img src="/assets/sports-soccer.svg" alt="" />
-        <span>Community score predictions</span>
-      </p>
 
       <div className="segmented" role="tablist" aria-label="Match filters">
         {matchFilters.map(([id, label]) => (

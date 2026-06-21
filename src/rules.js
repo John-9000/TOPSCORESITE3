@@ -42,6 +42,7 @@ export function canUseOracle(match, now = Date.now()) {
 }
 
 export function numberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }

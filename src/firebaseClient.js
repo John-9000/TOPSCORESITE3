@@ -169,9 +169,15 @@ export async function refreshMatchesByIds(matchIds) {
 function fromMatchDoc(id, data) {
   const base = MATCHES_BY_ID[id] ?? MATCHES_BY_ID[data.matchId];
   if (!base) return null;
-  const startsAtUtc = timestampToIso(data.kickoffUtc ?? data.startsAtUtc) ?? base.startsAtUtc;
+  const startsAtUtc = timestampToIso(data.kickoffUtc ?? data.startsAtUtc ?? data.fixture?.date) ?? base.startsAtUtc;
   const home = normalizeTeamCode(data.homeTeamCode ?? data.homeTeamAcronym ?? base.homeTeamCode);
   const away = normalizeTeamCode(data.awayTeamCode ?? data.awayTeamAcronym ?? base.awayTeamCode);
+  const homeScore = scoreValue(data, "home");
+  const awayScore = scoreValue(data, "away");
+  const status = normalizeStatus(data.statusShort ?? data.status?.short ?? data.fixture?.status?.short)
+    ?? normalizeStatus(data.status)
+    ?? (typeof data.status === "string" ? data.status : null)
+    ?? base.status;
   return {
     ...base,
     matchId: data.matchId ?? id,
@@ -183,13 +189,13 @@ function fromMatchDoc(id, data) {
     awayTeamCode: away,
     homePlaceholder: home ? null : (data.homeTeamName ?? base.homePlaceholder),
     awayPlaceholder: away ? null : (data.awayTeamName ?? base.awayPlaceholder),
-    stadiumName: data.venueName ?? data.stadiumName ?? base.stadiumName,
-    city: data.venueCity ?? data.city ?? base.city,
+    stadiumName: data.venueName ?? data.stadiumName ?? data.fixture?.venue?.name ?? base.stadiumName,
+    city: data.venueCity ?? data.city ?? data.fixture?.venue?.city ?? base.city,
     country: data.country ?? base.country,
     locationDisplayName: data.locationDisplayName ?? base.locationDisplayName,
-    status: normalizeStatus(data.statusShort) ?? data.status ?? base.status,
-    actualHomeScore: intOrNull(data.homeScore ?? data.actualHomeScore),
-    actualAwayScore: intOrNull(data.awayScore ?? data.actualAwayScore),
+    status,
+    actualHomeScore: homeScore,
+    actualAwayScore: awayScore,
     actualHomePenaltyScore: intOrNull(data.penaltyHomeScore ?? data.actualHomePenaltyScore),
     actualAwayPenaltyScore: intOrNull(data.penaltyAwayScore ?? data.actualAwayPenaltyScore),
     winnerAcronym: data.winnerAcronym ?? base.winnerAcronym,
@@ -218,8 +224,24 @@ function timestampToIso(value) {
 }
 
 function intOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
   const number = Number(value);
   return Number.isInteger(number) ? number : null;
+}
+
+function scoreValue(data, side) {
+  const titleSide = side === "home" ? "Home" : "Away";
+  const direct = intOrNull(data[`${side}Score`] ?? data[`actual${titleSide}Score`]);
+  if (direct !== null) return direct;
+  return intOrNull(
+    data[`${side}Goals`]
+    ?? data[`goals${titleSide}`]
+    ?? data.goals?.[side]
+    ?? data.score?.fulltime?.[side]
+    ?? data.score?.fullTime?.[side]
+    ?? data.score?.regularTime?.[side]
+    ?? data.score?.current?.[side]
+  );
 }
 
 function normalizeTeamCode(value) {

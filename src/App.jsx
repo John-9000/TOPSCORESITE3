@@ -33,7 +33,9 @@ const reminderKey = "topscore_web_match_reminders";
 const scoreCacheKey = "topscore_web_score_cache_v2";
 const liveRefreshKey = "topscore_web_live_refresh_v1";
 const LIVE_REFRESH_INTERVAL_MS = 5 * 60 * 1000;
+const PAST_SCORE_RETRY_INTERVAL_MS = 10 * 60 * 1000;
 const LIVE_MATCH_WINDOW_MS = 2.5 * 60 * 60 * 1000;
+const googlePlayUrl = "https://play.google.com/store/apps/details?id=com.unrstudio.topscore&hl=en";
 
 export function App() {
   const [authState, setAuthState] = useState({ user: null, status: firebaseReady ? "booting" : "missing-config" });
@@ -80,7 +82,7 @@ export function App() {
       const cache = readScoreCache();
       const currentMatches = matchesRef.current;
       const pastMissingIds = currentMatches
-        .filter((match) => isPastMatch(match, now) && !scoreFor(match) && !cache.matches[match.matchId]?.attemptedAt)
+        .filter((match) => isPastMatch(match, now) && !scoreFor(match) && shouldRetryPastScore(cache.matches[match.matchId], now))
         .map((match) => match.matchId);
       const liveIds = currentMatches
         .filter((match) => isLiveMatch(match, now))
@@ -229,15 +231,23 @@ function MatchesView({
   function goToPage(nextPage) {
     const boundedPage = Math.min(Math.max(1, nextPage), pageCount);
     setPage(boundedPage);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0 });
   }
 
   return (
     <>
       <div className="bannerRow">
-        <button className="bannerButton" type="button" onClick={() => goToPage(1)} aria-label="Go to first page">
-          <img className="topscoreBanner" src="/assets/longbannertopscore.png" alt="TopScore" />
+        <button className="brandBanner" type="button" onClick={() => goToPage(1)} aria-label="Go to first page">
+          <span className="logoBall" aria-hidden="true" />
+          <span className="brandWords">
+            <strong>TOP<span>SCORE</span></strong>
+            <small>WORLD CUP 2026</small>
+          </span>
         </button>
+        <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer">
+          <img src="/assets/google-play-icon.png" alt="" />
+          <span>Get TopScore on Google Play</span>
+        </a>
       </div>
 
       <div className="segmented" role="tablist" aria-label="Match filters">
@@ -254,15 +264,7 @@ function MatchesView({
           <button type="button" onClick={() => goToPage(page - 1)} disabled={page === 1} aria-label="Previous page">
             <ChevronLeft size={22} />
           </button>
-          <button
-            type="button"
-            className="active currentPageButton"
-            aria-label={`Page ${page} of ${pageCount}`}
-            aria-current="page"
-          >
-            {page}
-          </button>
-          <span className="pageCountText">Page {page}/{pageCount}</span>
+          <span className="pageCountText" aria-current="page">Page {page}/{pageCount}</span>
           <button type="button" onClick={() => goToPage(page + 1)} disabled={page === pageCount} aria-label="Next page">
             <ChevronRight size={22} />
           </button>
@@ -325,7 +327,7 @@ function TeamBlock({ code, placeholder, right = false }) {
   const name = teamName(code, placeholder).toUpperCase();
   return (
     <div className={`teamBlock ${right ? "right" : ""}`}>
-      {flag ? <img src={flag} alt="" /> : <span className="flagFallback">TBD</span>}
+      {flag ? <img src={flag} alt="" loading="lazy" decoding="async" /> : <span className="flagFallback">TBD</span>}
       <strong>{name}</strong>
     </div>
   );
@@ -464,6 +466,12 @@ function writeScoreCache(remoteMatches, attemptedPastIds = []) {
   localStorage.setItem(scoreCacheKey, JSON.stringify({ matches: nextMatches }));
 }
 
+function shouldRetryPastScore(cacheEntry, now) {
+  if (!cacheEntry?.attemptedAt) return true;
+  const attemptedAt = new Date(cacheEntry.attemptedAt).getTime();
+  return !Number.isFinite(attemptedAt) || now - attemptedAt >= PAST_SCORE_RETRY_INTERVAL_MS;
+}
+
 function readLiveRefreshAt() {
   const value = Number(localStorage.getItem(liveRefreshKey));
   return Number.isFinite(value) ? value : 0;
@@ -474,6 +482,7 @@ function writeLiveRefreshAt(value) {
 }
 
 function numberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }

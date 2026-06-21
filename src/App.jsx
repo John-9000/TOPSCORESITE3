@@ -245,9 +245,6 @@ function MatchesView({
           </span>
         </button>
         <div className="storeBlock">
-          <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer" aria-label="Get TopScore on Google Play">
-            <img src="/assets/google-play-store-badge.svg" alt="Get it on Google Play" />
-          </a>
           <div className="promoList" aria-label="TopScore highlights">
             <p className="promoLine">
               <img src="/assets/sports-soccer.svg" alt="" />
@@ -258,6 +255,9 @@ function MatchesView({
               <span>Community predictions</span>
             </p>
           </div>
+          <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer" aria-label="Get TopScore on Google Play">
+            <img src="/assets/google-play-store-badge.svg" alt="Get it on Google Play" />
+          </a>
         </div>
       </div>
 

@@ -238,16 +238,21 @@ function MatchesView({
     <>
       <div className="bannerRow">
         <button className="brandBanner" type="button" onClick={() => goToPage(1)} aria-label="Go to first page">
-          <span className="logoBall" aria-hidden="true" />
+          <img className="brandIcon" src="/assets/sports-soccer.svg" alt="" />
           <span className="brandWords">
             <strong>TOP<span>SCORE</span></strong>
             <small>WORLD CUP 2026</small>
           </span>
         </button>
-        <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer">
-          <img src="/assets/google-play-icon.png" alt="" />
-          <span>Get TopScore on Google Play</span>
-        </a>
+        <div className="storeBlock">
+          <div className="storeCopy">
+            <span>Live scores for World Cup 2026</span>
+            <span>Community Predictions</span>
+          </div>
+          <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer" aria-label="Get TopScore on Google Play">
+            <img src="/assets/google-play-store-badge.svg" alt="Get it on Google Play" />
+          </a>
+        </div>
       </div>
 
       <div className="segmented" role="tablist" aria-label="Match filters">
@@ -369,7 +374,7 @@ function formatLongDate(value) {
   const date = new Date(value);
   const monthDay = new Intl.DateTimeFormat(undefined, { month: "long", day: "numeric" }).format(date);
   const weekday = new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(date);
-  const time = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit" }).format(date);
+  const time = new Intl.DateTimeFormat(undefined, { hour: "2-digit", minute: "2-digit", timeZoneName: "short" }).format(date);
   return `${monthDay}, ${weekday} - ${time}`;
 }
 

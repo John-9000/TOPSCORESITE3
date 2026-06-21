@@ -23,9 +23,9 @@ import {
 import { finalScoreFor } from "./rules.js";
 
 const matchFilters = [
-  ["future", "Future matches"],
-  ["past", "Past matches"],
-  ["all", "All matches"],
+  ["future", "Future"],
+  ["past", "Past"],
+  ["all", "All"],
 ];
 
 const PAGE_SIZE = 9;
@@ -217,7 +217,6 @@ function MatchesView({
   const pageCount = Math.max(1, Math.ceil(matches.length / PAGE_SIZE));
   const pageStart = (page - 1) * PAGE_SIZE;
   const pagedMatches = matches.slice(pageStart, pageStart + PAGE_SIZE);
-  const visiblePages = pageNumbers(page, pageCount);
 
   useEffect(() => {
     setPage(1);
@@ -255,18 +254,15 @@ function MatchesView({
           <button type="button" onClick={() => goToPage(page - 1)} disabled={page === 1} aria-label="Previous page">
             <ChevronLeft size={22} />
           </button>
-          {visiblePages.map((pageNumber) => (
-            <button
-              key={pageNumber}
-              type="button"
-              className={pageNumber === page ? "active" : ""}
-              onClick={() => goToPage(pageNumber)}
-              aria-label={`Page ${pageNumber}`}
-              aria-current={pageNumber === page ? "page" : undefined}
-            >
-              {pageNumber}
-            </button>
-          ))}
+          <button
+            type="button"
+            className="active currentPageButton"
+            aria-label={`Page ${page} of ${pageCount}`}
+            aria-current="page"
+          >
+            {page}
+          </button>
+          <span className="pageCountText">Page {page}/{pageCount}</span>
           <button type="button" onClick={() => goToPage(page + 1)} disabled={page === pageCount} aria-label="Next page">
             <ChevronRight size={22} />
           </button>
@@ -288,13 +284,6 @@ function MatchesView({
       </div>
     </>
   );
-}
-
-function pageNumbers(page, pageCount) {
-  if (pageCount <= 3) return Array.from({ length: pageCount }, (_, index) => index + 1);
-  if (page <= 2) return [1, 2, 3];
-  if (page >= pageCount - 1) return [pageCount - 2, pageCount - 1, pageCount];
-  return [page - 1, page, page + 1];
 }
 
 function MatchCard({ match, reminderEnabled, onInfo, onReminder }) {

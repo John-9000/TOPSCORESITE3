@@ -213,9 +213,9 @@ button:disabled {
   height: auto;
   display: block;
   object-fit: contain;
-  border-radius: 12px;
-  border: 2px solid rgba(92, 170, 232, 0.38);
-  background: rgba(3, 12, 20, 0.82);
+  border: 0;
+  border-radius: 0;
+  background: transparent;
 }
 
 .bannerButton {
@@ -333,12 +333,12 @@ button:disabled {
 }
 
 .radioMark {
-  width: 31px;
-  height: 31px;
+  width: 24px;
+  height: 24px;
   flex: 0 0 auto;
-  border: 4px solid #728495;
+  border: 2px solid #728495;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 6px rgba(3, 12, 20, 0.95);
+  box-shadow: inset 0 0 0 5px rgba(3, 12, 20, 0.95);
 }
 
 .segmented button.active {
@@ -360,6 +360,7 @@ button:disabled {
 }
 
 .matchCard {
+  border-width: 1px;
   border-color: #5baced;
   border-radius: 20px;
   padding: 24px 22px 26px;
@@ -369,7 +370,7 @@ button:disabled {
 
 .matchCard.isLive {
   border-color: #61bdff;
-  box-shadow: 0 0 0 1px rgba(97, 189, 255, 0.34), 0 18px 54px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 18px 54px rgba(0, 0, 0, 0.34);
 }
 
 .matchHeader {
@@ -617,9 +618,10 @@ button:disabled {
   width: 100vw;
   margin: -8px 0 20px calc(50% - 50vw);
   display: grid;
-  grid-template-columns: minmax(48px, 1fr) repeat(3, auto) minmax(48px, 1fr);
+  grid-template-columns: minmax(48px, 1fr) auto auto minmax(48px, 1fr);
   justify-items: center;
-  gap: 7px;
+  align-items: center;
+  gap: 10px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -656,6 +658,13 @@ button:disabled {
   border-color: rgba(92, 170, 232, 0.78);
   background: rgba(42, 131, 205, 0.28);
   color: #f6fbff;
+}
+
+.pageCountText {
+  color: #a8b8c8;
+  font-size: 15px;
+  font-weight: 850;
+  white-space: nowrap;
 }
 
 .pagination button:disabled {
@@ -1009,7 +1018,7 @@ button:disabled {
   }
 
   .topscoreBanner {
-    border-radius: 10px;
+    border-radius: 0;
   }
 
   .searchBox {
@@ -1047,9 +1056,10 @@ button:disabled {
   }
 
   .radioMark {
-    width: 25px;
-    height: 25px;
-    border-width: 4px;
+    width: 20px;
+    height: 20px;
+    border-width: 2px;
+    box-shadow: inset 0 0 0 4px rgba(3, 12, 20, 0.95);
   }
 
   .matchCard {
@@ -1172,7 +1182,7 @@ button:disabled {
   }
 
   .topscoreBanner {
-    border-radius: 8px;
+    border-radius: 0;
   }
 
   .filterButton {
@@ -1193,8 +1203,8 @@ button:disabled {
   }
 
   .radioMark {
-    width: 23px;
-    height: 23px;
+    width: 18px;
+    height: 18px;
   }
 
   .livePill {

@@ -17,13 +17,22 @@ import {
 import { BASE_MATCHES, MATCHES_BY_ID, mergeMatches } from "./worldCup.js";
 import { generatedName } from "./names.js";
 
+const publicFirebaseConfig = {
+  apiKey: "AIzaSyDW7viWzYriZsMkaM8CsM-kfXqEpGcatzg",
+  authDomain: "topscore-e9ddf.firebaseapp.com",
+  projectId: "topscore-e9ddf",
+  storageBucket: "topscore-e9ddf.firebasestorage.app",
+  messagingSenderId: "591905938293",
+  appId: "1:591905938293:android:87472be2776d22011cd13c",
+};
+
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || publicFirebaseConfig.apiKey,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || publicFirebaseConfig.authDomain,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || publicFirebaseConfig.projectId,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || publicFirebaseConfig.storageBucket,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || publicFirebaseConfig.messagingSenderId,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID || publicFirebaseConfig.appId,
 };
 
 export const firebaseReady = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);

@@ -245,15 +245,17 @@ function MatchesView({
           </span>
         </button>
         <div className="storeBlock">
-          <div className="storeCopy">
-            <span>Live scores for World Cup 2026</span>
-            <span>Community Predictions</span>
-          </div>
           <a className="playStoreButton" href={googlePlayUrl} target="_blank" rel="noreferrer" aria-label="Get TopScore on Google Play">
             <img src="/assets/google-play-store-badge.svg" alt="Get it on Google Play" />
           </a>
         </div>
       </div>
+
+      <p className="promoLine">
+        <span>Live scores for World Cup 2026</span>
+        <img src="/assets/sports-soccer.svg" alt="" />
+        <span>Community score predictions</span>
+      </p>
 
       <div className="segmented" role="tablist" aria-label="Match filters">
         {matchFilters.map(([id, label]) => (
@@ -418,12 +420,14 @@ function applyScoreCache(matches) {
   const cache = readScoreCache();
   return matches.map((match) => {
     const cached = cache.matches[match.matchId];
-    if (!cached || cached.homeScore === null || cached.awayScore === null) return match;
+    const homeScore = numberOrNull(cached?.homeScore);
+    const awayScore = numberOrNull(cached?.awayScore);
+    if (homeScore === null || awayScore === null) return match;
     return {
       ...match,
       status: cached.status ?? match.status,
-      actualHomeScore: cached.homeScore,
-      actualAwayScore: cached.awayScore,
+      actualHomeScore: homeScore,
+      actualAwayScore: awayScore,
       updatedAt: cached.updatedAt ?? match.updatedAt,
     };
   });

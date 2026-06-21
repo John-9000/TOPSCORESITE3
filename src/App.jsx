@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import {
   firebaseReady,
+  loadMatches,
   loadMatchDetails,
   refreshMatchesByIds,
   subscribeAuth,
@@ -49,6 +50,25 @@ export function App() {
   useEffect(() => {
     matchesRef.current = matches;
   }, [matches]);
+
+  useEffect(() => {
+    if (!authState.user) return undefined;
+    let disposed = false;
+
+    async function loadRemoteMatches() {
+      try {
+        const result = await loadMatches();
+        if (!disposed) setMatches(applyScoreCache(result.matches));
+      } catch (error) {
+        if (!disposed) setMessage(error.message || "Unable to connect to Firebase match data.");
+      }
+    }
+
+    loadRemoteMatches();
+    return () => {
+      disposed = true;
+    };
+  }, [authState.user]);
 
   useEffect(() => {
     if (!authState.user) return undefined;
